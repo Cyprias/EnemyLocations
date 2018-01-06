@@ -336,6 +336,11 @@ do
 		local y     = params.y;
 		local time  = params.time or GetTime();
 		
+		-- Ignore enemies that have died in the last few seconds.
+		if (core:IsDead({name=name})) then
+			return;
+		end
+		
 		--core:Debug("coordinateRounding: " .. tostring(core.db.profile.coordinateRounding));
 		
 		x = core.RoundToNearest(x, core.db.profile.coordinateRounding);
@@ -403,6 +408,8 @@ do
 			return;
 		end
 		
+
+		
 		local x, y = GetPlayerMapPosition(friend);
 		--core.Debug("PlayersInteracting", "friend: " .. tostring(friend) .. ", enemy: " .. tostring(enemy) .. ", x: " .. tostring(x));
 		
@@ -469,9 +476,20 @@ do
 			core:Debug("eventType: " .. eventType .. ", srcName: " .. tostring(srcName) .. ", dstName: " .. tostring(dstName));
 			if (FlagIsPlayer(dstFlags) and FlagIsEnemy(dstFlags)) then
 				core:RemoveEnemyLocation({ name = dstName })
+				diedEnemies[dstName] = GetTime();
 			end
 		end
 		
+	end
+	
+	local diedEnemies = {};
+	
+	function core:IsDead(params)
+		local name = params.name;
+		if (diedEnemies[name]) then
+			return GetTime() - diedEnemies[name] < 15;
+		end
+		return false;
 	end
 	
 end

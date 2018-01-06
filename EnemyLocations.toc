@@ -1,6 +1,6 @@
 ## Interface: 50400
 ## Title: Enemy Locations
-## Version: 1.0.180105
+## Version: 1.0.180106
 ## Notes: Show enemy locations on map.
 ## Author: Cyprias
 ## SavedVariables: EnemyLocations_DB

@@ -1,0 +1,16 @@
+## Interface: 50400
+## Title: Enemy Locations
+## Version: 1.0.180105
+## Notes: Show enemy locations on map.
+## Author: Cyprias
+## SavedVariables: EnemyLocations_DB
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: true
+
+Libs\embeds.xml
+
+core.lua
+options.lua
+
+

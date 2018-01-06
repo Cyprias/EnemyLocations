@@ -88,6 +88,8 @@ do
 	local OnDisable = core.OnDisable
 	function core:OnDisable(...)
 		if OnDisable then OnDisable(self, ...) end
+		
+		core:HideAllCounts({parent=WorldMapDetailFrame});
 	end
 end
 
@@ -240,7 +242,7 @@ end
 
 do
 	local fontLocation	= "Fonts\\FRIZQT__.TTF"
-	local fontSize = 14;
+	--local fontSize = 16;
 	
 	local GetTime = GetTime;
 	
@@ -258,12 +260,12 @@ do
 		y = -y * parent:GetHeight();
 		f:SetPoint("CENTER", parent, "TOPLEFT", x, y);
 
-		f:SetWidth( fontSize )
-		f:SetHeight( fontSize )
+		f:SetWidth( core.db.profile.fontSize )
+		f:SetHeight( core.db.profile.fontSize )
 		
 		f.text = f:CreateFontString(nil, "OVERLAY", "ChatFontNormal")
 		f.text:SetPoint("CENTER")
-		f.text:SetFont(fontLocation, fontSize, "OUTLINE")
+		f.text:SetFont(fontLocation, core.db.profile.fontSize, "OUTLINE")
 		--f.text:SetText("?")
 
 		f:SetFrameStrata("FULLSCREEN");
@@ -332,14 +334,18 @@ do
 		local name  = params.name;
 		local x     = params.x;
 		local y     = params.y;
+		local time  = params.time or GetTime();
 		
-		x = core.RoundToNearest(x, 0.02);
-		y = core.RoundToNearest(y, 0.02);
+		--core:Debug("coordinateRounding: " .. tostring(core.db.profile.coordinateRounding));
+		
+		x = core.RoundToNearest(x, core.db.profile.coordinateRounding);
+		y = core.RoundToNearest(y, core.db.profile.coordinateRounding);
 		enemies[ name ] = {
 			x       = x, 
-			y       = y,
-			time    = GetTime()
+			y       = y
 		};
+		
+		enemies[ name ].time = time
 		
 		--core.Debug("<SaveEnemyLocation>", "SaveEnemyLocation name: " .. tostring(name) .. ", x: " .. tostring(x) .. ", y: " .. tostring(y));
 	end
@@ -417,32 +423,34 @@ do
 			if srcName ~= dstName then--person's not healing them self, ect.
 
 				if (eventType ~= "SPELL_AURA_REMOVED" and not eventType:find("PERIODIC") ) then -- Ignore removed, they could have left a battleground and had debuffs.
-					--[[
+					--[[ ]]
 					if FlagIsEnemy(srcFlags) and FlagIsEnemy(dstFlags) then
 						--self:EnemyAtEnemyLocation(srcName, dstName)
 						local enemyLoc = core:GetEnemyLocation({name=srcName});
 						
-						if (enemyLoc and GetTime() - enemyLoc.time < 5) then
+						if (enemyLoc and GetTime() - enemyLoc.time < 10) then
 							--core:Debug(tostring(srcName) .. " and " .. tostring(dstName) .. " are interacting together.");
 						
+							--[[ ]]
 							-- Refresh loc for source.
 							core:SaveEnemyLocation({
-								name	= srcName,
-								x       = enemyLoc.x,
-								y       = enemyLoc.y,
+								name	    = srcName,
+								x           = enemyLoc.x,
+								y           = enemyLoc.y,
+								time	    = enemyLoc.time 
 							});
 							
 							-- Set loc for dest.
 							core:SaveEnemyLocation({
-								name	= dstName,
-								x       = enemyLoc.x,
-								y       = enemyLoc.y,
+								name	    = dstName,
+								x           = enemyLoc.x,
+								y           = enemyLoc.y,
+								time	    = enemyLoc.time 
 							});
 							
+							
 						end
-					else
-					]]
-					if FlagIsEnemy(srcFlags) and FlagIsFriendly(dstFlags) then
+					elseif FlagIsEnemy(srcFlags) and FlagIsFriendly(dstFlags) then
 						core:PlayersInteracting({
 							friend = dstName, -- UnitName("player")
 							enemy = srcName

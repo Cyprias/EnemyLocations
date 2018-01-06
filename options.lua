@@ -6,7 +6,10 @@
 
 local folder, core = ...
 local Options = core:NewModule("MainOptions","AceConsole-3.0")
-core.defaultSettings.profile = {}
+core.defaultSettings.profile = {
+	textSize = 14,
+	coordinateRounding = 0.04,
+}
 
 local L = core.L or {};
 L.blizOptionsName = "Sorry %s, the options are in another window."
@@ -50,7 +53,7 @@ do
 	-- to open AceConfigDialog's window.
 	
 		local blizOptions = {
-			name = core.name,
+			name = core.titleFull,
 			type = "group",
 			args = {
 			
@@ -150,16 +153,24 @@ do
 					disabled = false,
 				},
 
-				--[[
-				showScores = {
-					type = "execute",	order	= 4,
+			
+				fontSize = {
+					type = "range",	order	= 4,
 					name	= name,
 					desc	= desc, 
-					func = function(info, v)
-						core:ShowScores();
-					end,
+					min		= 10,
+					max		= 18,
+					step	= 1
 				},
-				]]
+				
+				coordinateRounding = {
+					type = "range",	order	= 4,
+					name	= name,
+					desc	= desc, 
+					min		= 0.01,
+					max		= 0.1,
+					step	= 0.01
+				},
 				
 				debugHeader = {
 					name	= "Debugging",

@@ -7,8 +7,9 @@
 local folder, core = ...
 local Options = core:NewModule("MainOptions","AceConsole-3.0")
 core.defaultSettings.profile = {
-	textSize = 14,
-	coordinateRounding = 0.04,
+	textSize            = 14,
+	coordinateRounding  = 0.04,
+	locationTimeout     = 15,
 }
 
 local L = core.L or {};
@@ -164,7 +165,7 @@ do
 				},
 				
 				coordinateRounding = {
-					type = "range",	order	= 4,
+					type = "range",	order	= 5,
 					name	= name,
 					desc	= desc, 
 					min		= 0.01,
@@ -172,11 +173,20 @@ do
 					step	= 0.01
 				},
 				
+				locationTimeout = {
+					type = "range",	order	= 6,
+					name	= name,
+					desc	= desc, 
+					min		= 10,
+					max		= 30,
+				},
+				
 				debugHeader = {
 					name	= "Debugging",
 					order	= 80,
 					type = "header",
 				},
+				
 				debugMessages = {
 					type = "toggle",	order	= 81,
 					name	= name,

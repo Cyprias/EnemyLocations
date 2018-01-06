@@ -214,7 +214,7 @@ do
 			elapsed = GetTime() - data.time;
 			--core.Debug("PopulateMap", "PopulateMap name: " .. tostring(name) .. ", elapsed: " .. tostring(elapsed));
 			
-			if (elapsed < 30) then
+			if (elapsed < core.db.profile.locationTimeout) then
 			
 				locStr = data.x .. ":" .. data.y;
 				
@@ -428,7 +428,7 @@ do
 						--self:EnemyAtEnemyLocation(srcName, dstName)
 						local enemyLoc = core:GetEnemyLocation({name=srcName});
 						
-						if (enemyLoc and GetTime() - enemyLoc.time < 10) then
+						if (enemyLoc) then
 							--core:Debug(tostring(srcName) .. " and " .. tostring(dstName) .. " are interacting together.");
 						
 							--[[ ]]

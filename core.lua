@@ -422,6 +422,16 @@ do
 		end
 	end
 	
+	local deadEnemies = {};
+	
+	function core:IsDead(params)
+		local name = params.name;
+		if (deadEnemies[name]) then
+			return GetTime() - deadEnemies[name] < 15;
+		end
+		return false;
+	end
+	
 	function core:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
 		local timestamp, eventType, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGUID, dstName, dstFlags, destRaidFlags = select(1, ...);
 		local _, _, eventPrefix, eventSuffix = eventType:find("(.-)_(.+)")
@@ -476,20 +486,9 @@ do
 			core:Debug("eventType: " .. eventType .. ", srcName: " .. tostring(srcName) .. ", dstName: " .. tostring(dstName));
 			if (FlagIsPlayer(dstFlags) and FlagIsEnemy(dstFlags)) then
 				core:RemoveEnemyLocation({ name = dstName })
-				diedEnemies[dstName] = GetTime();
+				deadEnemies[dstName] = GetTime();
 			end
 		end
 		
 	end
-	
-	local diedEnemies = {};
-	
-	function core:IsDead(params)
-		local name = params.name;
-		if (diedEnemies[name]) then
-			return GetTime() - diedEnemies[name] < 15;
-		end
-		return false;
-	end
-	
 end

@@ -75,8 +75,8 @@ do
 	function core:OnEnable()
 		if OnEnable then OnEnable(self) end
 
-		self:HookScript(WorldMapFrame, "OnShow", "WorldMapFrameOnShow")
-		self:HookScript(WorldMapFrame, "OnHide", "WorldMapFrameOnHide")
+		self:SecureHookScript(WorldMapFrame, "OnShow", "WorldMapFrameOnShow")
+		self:SecureHookScript(WorldMapFrame, "OnHide", "WorldMapFrameOnHide")
 		
 		
 		
@@ -178,7 +178,7 @@ do
 	
 	local createdFrames = false;
 	function core:WorldMapFrameOnShow(frame) 
-		--core.Debug("WorldMapFrameOnShow", "<WorldMapFrameOnShow>");
+		core:Debug("<WorldMapFrameOnShow>");
 		--core:PopulateMap();
 		
 		
@@ -187,6 +187,7 @@ do
 	end
 	
 	function core:WorldMapFrameOnHide(frame) 
+		core:Debug("<WorldMapFrameOnHide>");
 		core:HideAllCounts({parent=WorldMapDetailFrame});
 		core:CancelTimer(timer)
 	end

@@ -7,9 +7,10 @@
 local folder, core = ...
 local Options = core:NewModule("MainOptions","AceConsole-3.0")
 core.defaultSettings.profile = {
-	textSize            = 16,
+	fontSize            = 16,
 	coordinateRounding  = 0.03,
 	locationTimeout     = 30,
+	debugMessages       = false,
 }
 
 local L = core.L or {};

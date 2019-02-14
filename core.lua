@@ -201,11 +201,11 @@ do
 end
 
 do
-	function core:PopulateMap()
-		--core.Debug("PopulateMap", "<PopulateMap>");
+	function core:PopulateMap()--	/script _EL:PopulateMap();
+		core:Debug("PopulateMap");
 		local enemies = core:GetEnemyLocations();
 		
-		--core.Debug("PopulateMap", core:dump_table(enemies));
+		core.Debug("PopulateMap", core:dump_table(enemies));
 		
 		local locations = {};
 		
@@ -213,7 +213,7 @@ do
 		local locStr;
 		for name, data in pairs( enemies ) do 
 			elapsed = GetTime() - data.time;
-			--core.Debug("PopulateMap", "PopulateMap name: " .. tostring(name) .. ", elapsed: " .. tostring(elapsed));
+			core.Debug("PopulateMap", "PopulateMap name: " .. tostring(name) .. ", elapsed: " .. tostring(elapsed));
 			
 			if (elapsed < core.db.profile.locationTimeout) then
 			
@@ -304,9 +304,7 @@ do
 				y       = y,
 				parent  = parent,
 			});
-			--core.Debug("GetLocationFrame", "Created frame.");
-
-
+			core.Debug("GetLocationFrame", "Created frame. " .. tostring(x) .. ", " .. tostring(y));
 		end
 		
 		return frames[parent][x][y];
@@ -314,6 +312,7 @@ do
 	
 	function core:HideAllCounts( params )
 		local parent = params.parent;
+		core:Debug("HideAllCounts");
 		
 		local fs = frames[ parent ];
 		if (fs) then
@@ -353,7 +352,7 @@ do
 		
 		enemies[ name ].time = time
 		
-		--core.Debug("<SaveEnemyLocation>", "SaveEnemyLocation name: " .. tostring(name) .. ", x: " .. tostring(x) .. ", y: " .. tostring(y));
+		core.Debug("<SaveEnemyLocation>", "SaveEnemyLocation name: " .. tostring(name) .. ", x: " .. tostring(x) .. ", y: " .. tostring(y));
 	end
 	
 	function core:GetEnemyLocation(params)
@@ -412,7 +411,7 @@ do
 
 		
 		local x, y = GetPlayerMapPosition(friend);
-		--core.Debug("PlayersInteracting", "friend: " .. tostring(friend) .. ", enemy: " .. tostring(enemy) .. ", x: " .. tostring(x));
+		core.Debug("PlayersInteracting", "friend: " .. tostring(friend) .. ", enemy: " .. tostring(enemy) .. ", x: " .. tostring(x) .. ", y: " .. tostring(y));
 		
 		if (enemy and x) then
 			core:SaveEnemyLocation({
@@ -437,12 +436,26 @@ do
 		local timestamp, eventType, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGUID, dstName, dstFlags, destRaidFlags = select(1, ...);
 		local _, _, eventPrefix, eventSuffix = eventType:find("(.-)_(.+)")
 		
+		--[[
+		core:Debug("eventType: " .. eventType 
+			.. ", srcName: " .. tostring(srcName) 
+			.. ", dstName: " .. tostring(dstName) 
+			.. ", srcIsPlayer: " .. tostring(FlagIsPlayer(srcFlags))
+			.. ", dstIsPlayer: " .. tostring(FlagIsPlayer(dstFlags))
+			.. ", srcIsEnemy: " .. tostring(FlagIsEnemy(srcFlags))
+			.. ", dstIsEnemy: " .. tostring(FlagIsEnemy(dstFlags))
+		);
+		]]
+		
 		if FlagIsPlayer(srcFlags) and FlagIsPlayer(dstFlags) then --Both are players.
+			
+		
 			if srcName ~= dstName then--person's not healing them self, ect.
 
 				if (eventType ~= "SPELL_AURA_REMOVED" and not eventType:find("PERIODIC") ) then -- Ignore removed, they could have left a battleground and had debuffs.
-					--[[ ]]
 					if FlagIsEnemy(srcFlags) and FlagIsEnemy(dstFlags) then
+						
+					
 						--self:EnemyAtEnemyLocation(srcName, dstName)
 						local enemyLoc = core:GetEnemyLocation({name=srcName});
 						
@@ -484,7 +497,7 @@ do
 		end
 		
 		if (eventType == "UNIT_DIED") then
-			core:Debug("eventType: " .. eventType .. ", srcName: " .. tostring(srcName) .. ", dstName: " .. tostring(dstName));
+			--core:Debug("eventType: " .. eventType .. ", srcName: " .. tostring(srcName) .. ", dstName: " .. tostring(dstName));
 			if (FlagIsPlayer(dstFlags) and FlagIsEnemy(dstFlags)) then
 				core:RemoveEnemyLocation({ name = dstName })
 				deadEnemies[dstName] = GetTime();
